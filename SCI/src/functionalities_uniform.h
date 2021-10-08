@@ -921,7 +921,7 @@ void funcFieldDiv(int curParty, sci::NetIO *curio,
     for (int i = 0; i < size; i++) {
 #ifdef __SIZEOF_INT128__
       intType temp =
-          (((__int128)localShareCorr[i]) * ((__int128)ringQuot)) % prime_mod;
+          (((__uint128_t)localShareCorr[i]) * ((__uint128_t)ringQuot)) % prime_mod;
 #else
       intType temp = sci::moduloMult(localShareCorr[i], ringQuot, prime_mod);
 #endif
@@ -960,7 +960,7 @@ void funcFieldDiv(int curParty, sci::NetIO *curio,
       localShareCorrSmallRing[i] = otMsgCorrSmallRing[i];
 #ifdef __SIZEOF_INT128__
       intType temp =
-          (((__int128)localShareCorr[i]) * ((__int128)ringQuot)) % prime_mod;
+          (((__uint128_t)localShareCorr[i]) * ((__uint128_t)ringQuot)) % prime_mod;
 #else
       intType temp = sci::moduloMult(localShareCorr[i], ringQuot, prime_mod);
 #endif

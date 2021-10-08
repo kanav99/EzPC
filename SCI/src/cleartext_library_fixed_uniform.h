@@ -203,9 +203,9 @@ uint64_t PublicSub(uint64_t x, uint64_t y) {
 uint64_t PublicMult(uint64_t x, uint64_t y) {
   assert((x < prime_mod) && (y < prime_mod));
 #ifdef __SIZEOF_INT128__
-  __int128 ix = x;
-  __int128 iy = y;
-  __int128 iz = ix * iy;
+  __uint128_t ix = x;
+  __uint128_t iy = y;
+  __uint128_t iz = ix * iy;
 
   return iz % prime_mod;
 #else
@@ -305,9 +305,9 @@ template <typename T> ostream &operator<<(ostream &os, const vector<T> &v) {
 
 void MatMul2DEigen_pt(int64_t i, int64_t j, int64_t k, uint64_2D &A,
                       uint64_2D &B, uint64_2D &C, int64_t consSF) {
-  Eigen::Matrix<__int128, Eigen::Dynamic, Eigen::Dynamic> eigen_a(i, j);
-  Eigen::Matrix<__int128, Eigen::Dynamic, Eigen::Dynamic> eigen_b(j, k);
-  Eigen::Matrix<__int128, Eigen::Dynamic, Eigen::Dynamic> eigen_c(i, k);
+  Eigen::Matrix<__uint128_t, Eigen::Dynamic, Eigen::Dynamic> eigen_a(i, j);
+  Eigen::Matrix<__uint128_t, Eigen::Dynamic, Eigen::Dynamic> eigen_b(j, k);
+  Eigen::Matrix<__uint128_t, Eigen::Dynamic, Eigen::Dynamic> eigen_c(i, k);
 
   for (int i0 = 0; i0 < i; ++i0) {
     for (int i1 = 0; i1 < j; ++i1) {
@@ -321,7 +321,7 @@ void MatMul2DEigen_pt(int64_t i, int64_t j, int64_t k, uint64_2D &A,
     }
   }
 
-  eigen_c = eigen_a * eigen_b; // No overflows since running in __int128
+  eigen_c = eigen_a * eigen_b; // No overflows since running in __uint128_t
 
   for (int i0 = 0; i0 < i; ++i0) {
     for (int i1 = 0; i1 < k; ++i1) {
