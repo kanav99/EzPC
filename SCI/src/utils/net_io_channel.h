@@ -40,6 +40,17 @@ using std::string;
 #include <sys/types.h>
 #include <unistd.h>
 
+#define USESSL
+
+#ifdef USESSL
+// #include <openssl/applink.h>
+#include <openssl/bio.h>
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+#endif
+
+#include "ssl.h"
+
 enum class LastCall { None, Send, Recv };
 
 namespace sci {
@@ -60,6 +71,11 @@ public:
   uint64_t counter = 0;
   uint64_t num_rounds = 0;
   LastCall last_call = LastCall::None;
+
+  SSL *cSSL = nullptr;
+  SSL_CTX *sslctx = nullptr;
+  BIO *sbio;
+
   NetIO(const char *address, int port, bool quiet = false) {
     this->port = port;
     is_server = (address == nullptr);
@@ -86,10 +102,28 @@ public:
         exit(1);
       }
       consocket = accept(mysocket, (struct sockaddr *)&dest, &socksize);
+#ifdef USESSL
+      sslctx = get_server_context("/ssl/ca/ca_cert.pem", "/ssl/server/server_cert.pem", "/ssl/server/private/server_key.pem");
+      cSSL = SSL_new(sslctx);
+      SSL_set_fd(cSSL, consocket);
+      assert(SSL_accept(cSSL) > 0);
+#endif
       close(mysocket);
     } else {
       addr = string(address);
 
+#ifdef USESSL
+      sslctx = get_client_context("/ssl/ca/ca_cert.pem", "/ssl/client/client_cert.pem", "/ssl/client/private/client_key.pem");
+      sbio = BIO_new_ssl_connect(sslctx);
+      BIO_get_ssl(sbio, &cSSL);
+      // cSSL = SSL_new(sslctx);
+      // SSL_set_fd(cSSL, consocket);
+      // assert(SSL_connect(cSSL) > 0);
+      std::string constr = addr + ":" + std::to_string(port);
+      assert(BIO_set_conn_hostname(sbio, constr.c_str()) == 1);
+      assert(SSL_do_handshake(cSSL) == 1);
+      assert(SSL_get_verify_result(cSSL) == X509_V_OK);
+#else
       struct sockaddr_in dest;
       memset(&dest, 0, sizeof(dest));
       dest.sin_family = AF_INET;
@@ -107,13 +141,16 @@ public:
         close(consocket);
         usleep(1000);
       }
+#endif
     }
+#ifndef USESSL
     set_nodelay();
     stream = fdopen(consocket, "wb+");
     buffer = new char[NETWORK_BUFFER_SIZE];
     memset(buffer, 0, NETWORK_BUFFER_SIZE);
     // setvbuf(stream, buffer, _IOFBF, NETWORK_BUFFER_SIZE);
     setvbuf(stream, buffer, _IONBF, NETWORK_BUFFER_SIZE);
+#endif
     if (!quiet)
       std::cout << "connected\n";
   }
@@ -166,7 +203,11 @@ public:
     counter += len;
     int sent = 0;
     while (sent < len) {
+#ifdef USESSL
+      int res = SSL_write(cSSL, sent + (char *)data, len - sent);
+#else
       int res = fwrite(sent + (char *)data, 1, len - sent, stream);
+#endif
       if (res >= 0)
         sent += res;
       else
@@ -185,7 +226,11 @@ public:
     has_sent = false;
     int sent = 0;
     while (sent < len) {
+#ifdef USESSL
+      int res = SSL_read(cSSL, sent + (char *)data, len - sent);
+#else
       int res = fread(sent + (char *)data, 1, len - sent, stream);
+#endif
       if (res >= 0)
         sent += res;
       else

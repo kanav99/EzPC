@@ -43,8 +43,8 @@ target_include_directories(SCI-common
 )
 
 add_library(SCI-OT library_fixed_uniform.cpp library_fixed.cpp
-    globals.cpp cleartext_library_fixed.cpp)
-add_library(SCI-HE library_fixed_uniform.cpp globals.cpp)
+    globals.cpp cleartext_library_fixed.cpp ssl.cpp)
+add_library(SCI-HE library_fixed_uniform.cpp globals.cpp ssl.cpp)
 
 target_link_libraries(SCI-OT PUBLIC SCI-common SCI-LinearOT
     SCI-BuildingBlocks SCI-Math Eigen3::Eigen)
