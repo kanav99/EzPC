@@ -112,18 +112,6 @@ public:
     } else {
       addr = string(address);
 
-#ifdef USESSL
-      sslctx = get_client_context("/ssl/ca/ca_cert.pem", "/ssl/client/client_cert.pem", "/ssl/client/private/client_key.pem");
-      sbio = BIO_new_ssl_connect(sslctx);
-      BIO_get_ssl(sbio, &cSSL);
-      // cSSL = SSL_new(sslctx);
-      // SSL_set_fd(cSSL, consocket);
-      // assert(SSL_connect(cSSL) > 0);
-      std::string constr = addr + ":" + std::to_string(port);
-      assert(BIO_set_conn_hostname(sbio, constr.c_str()) == 1);
-      assert(SSL_do_handshake(cSSL) == 1);
-      assert(SSL_get_verify_result(cSSL) == X509_V_OK);
-#else
       struct sockaddr_in dest;
       memset(&dest, 0, sizeof(dest));
       dest.sin_family = AF_INET;
@@ -141,6 +129,12 @@ public:
         close(consocket);
         usleep(1000);
       }
+#ifdef USESSL
+      sslctx = get_client_context("/ssl/ca/ca_cert.pem", "/ssl/client/client_cert.pem", "/ssl/client/private/client_key.pem");
+      cSSL = SSL_new(sslctx);
+      SSL_set_fd(cSSL, consocket);
+      assert(SSL_connect(cSSL) > 0);
+
 #endif
     }
 #ifndef USESSL
