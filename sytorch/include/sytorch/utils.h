@@ -447,3 +447,9 @@ void printscale(const Tensor<T> &p, u64 scale, u64 bw = sizeof(T) * 8)
         }
     }
 }
+
+inline void sytorch_init()
+{
+    prngWeights.SetSeed(osuCrypto::toBlock(0, 0));
+    prngStr.SetSeed(osuCrypto::toBlock(time(NULL)));
+}
