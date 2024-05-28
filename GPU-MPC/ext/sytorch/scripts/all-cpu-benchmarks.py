@@ -1,4 +1,5 @@
 import subprocess
+import csv
 
 mute = False
 
@@ -29,4 +30,8 @@ for b in benchmarks:
     run_seq(f'./benchmark-{b} 1')
     print("[+] --- running online phase...")
     run_par(f'OMP_NUM_THREADS=4 ./benchmark-{b} 2', f'OMP_NUM_THREADS=4 ./benchmark-{b} 3')
+
+    with open('llama3.csv') as f:
+        csvFile = csv.reader(f)
+        print(csvFile.lines())
 
