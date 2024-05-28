@@ -31,10 +31,31 @@ for b in benchmarks:
     print("[+] --- running online phase...")
     run_par(f'OMP_NUM_THREADS=4 ./benchmark-{b} 2', f'OMP_NUM_THREADS=4 ./benchmark-{b} 3')
 
+    total_time = 0.0
+    total_comm = 0.0
+    act_time = 0.0
+    act_comm = 0.0
+    softmax_time = 0.0
+    softmax_comm = 0.0
+    norm_time = 0.0
+    norm_comm = 0.0
     with open('llama3.csv') as f:
         csvFile = csv.reader(f)
-        rows = []
         for lines in csvFile:
-            rows.append(lines)
-        print(rows)
+            if rows[0].startswith('GeLU::'):
+                act_time += float(rows[1])
+                act_comm += float(rows[2])
+            elif rows[0].startswith('LayerNorm::'):
+                norm_time += float(rows[1])
+                norm_comm += float(rows[2])
+            elif rows[0].startswith('nExp::'):
+                softmax_time += float(rows[1])
+                softmax_comm += float(rows[2])
+            elif rows[0].startswith('Softmax::'):
+                softmax_time += float(rows[1])
+                softmax_comm += float(rows[2])
+            total_time += float(rows[1])
+            total_comm += float(rows[2])
+    print("[+] --- online time = " + str(total_time/1000.0) + " s")
+    print("[+] --- online comm = " + str(total_comm/1024.0) + " GB")
 
