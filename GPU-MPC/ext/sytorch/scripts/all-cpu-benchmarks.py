@@ -5,10 +5,10 @@ mute = False
 
 benchmarks = [
     'bert-tiny',
-    # 'bert-base',
-    # 'bert-large',
-    # 'gpt2',
-    # 'gptneo'
+    'bert-base',
+    'bert-large',
+    'gpt2',
+    'gptneo'
 ]
 
 def run_seq(cmd):
@@ -60,6 +60,12 @@ for b in benchmarks:
                 softmax_comm += float(lines[2])
             total_time += float(lines[1])
             total_comm += float(lines[2])
+    print("[+] --- act time = " + str(act_time/1000.0) + " s")
+    print("[+] --- act comm = " + str(act_comm/1024.0) + " GB")
+    print("[+] --- softmax time = " + str(softmax_time/1000.0) + " s")
+    print("[+] --- softmax comm = " + str(softmax_comm/1024.0) + " GB")
+    print("[+] --- norm time = " + str(norm_time/1000.0) + " s")
+    print("[+] --- norm comm = " + str(norm_comm/1024.0) + " GB")
     print("[+] --- online time = " + str(total_time/1000.0) + " s")
     print("[+] --- online comm = " + str(total_comm/1024.0) + " GB")
 
