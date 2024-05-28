@@ -370,3 +370,17 @@ add_executable(
 )
 
 target_link_libraries(gptneobenchmark ${PROJECT_NAME})
+
+add_executable(
+    benchmark-bert-tiny
+    benchmarks/bert-tiny.cpp
+)
+
+target_link_libraries(benchmark-bert-tiny ${PROJECT_NAME})
+
+add_executable(
+    benchmark-bert-base
+    benchmarks/bert-base.cpp
+)
+
+target_link_libraries(benchmark-bert-base ${PROJECT_NAME})
