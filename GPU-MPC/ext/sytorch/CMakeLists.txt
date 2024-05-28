@@ -384,3 +384,24 @@ add_executable(
 )
 
 target_link_libraries(benchmark-bert-base ${PROJECT_NAME})
+
+add_executable(
+    benchmark-bert-large
+    benchmarks/bert-large.cpp
+)
+
+target_link_libraries(benchmark-bert-large ${PROJECT_NAME})
+
+add_executable(
+    benchmark-gpt2
+    benchmarks/gpt2.cpp
+)
+
+target_link_libraries(benchmark-gpt2 ${PROJECT_NAME})
+
+add_executable(
+    benchmark-gptneo
+    benchmarks/gptneo.cpp
+)
+
+target_link_libraries(benchmark-gptneo ${PROJECT_NAME})
