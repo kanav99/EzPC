@@ -42,20 +42,20 @@ for b in benchmarks:
     with open('llama3.csv') as f:
         csvFile = csv.reader(f)
         for lines in csvFile:
-            if rows[0].startswith('GeLU::'):
-                act_time += float(rows[1])
-                act_comm += float(rows[2])
-            elif rows[0].startswith('LayerNorm::'):
-                norm_time += float(rows[1])
-                norm_comm += float(rows[2])
-            elif rows[0].startswith('nExp::'):
-                softmax_time += float(rows[1])
-                softmax_comm += float(rows[2])
-            elif rows[0].startswith('Softmax::'):
-                softmax_time += float(rows[1])
-                softmax_comm += float(rows[2])
-            total_time += float(rows[1])
-            total_comm += float(rows[2])
+            if lines[0].startswith('GeLU::'):
+                act_time += float(lines[1])
+                act_comm += float(lines[2])
+            elif lines[0].startswith('LayerNorm::'):
+                norm_time += float(lines[1])
+                norm_comm += float(lines[2])
+            elif lines[0].startswith('nExp::'):
+                softmax_time += float(lines[1])
+                softmax_comm += float(lines[2])
+            elif lines[0].startswith('Softmax::'):
+                softmax_time += float(lines[1])
+                softmax_comm += float(lines[2])
+            total_time += float(lines[1])
+            total_comm += float(lines[2])
     print("[+] --- online time = " + str(total_time/1000.0) + " s")
     print("[+] --- online comm = " + str(total_comm/1024.0) + " GB")
 
