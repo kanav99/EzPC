@@ -26,5 +26,5 @@ for b in benchmarks:
     print("[+] compiling...")
     run_seq('make benchmark-' + b)
     print("[+] running dealer...")
-    run_seq(f'./benchmark-{b} 1 &> /dev/null')
+    run_seq(f'./benchmark-{b} 1')
 
