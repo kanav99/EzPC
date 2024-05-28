@@ -33,5 +33,8 @@ for b in benchmarks:
 
     with open('llama3.csv') as f:
         csvFile = csv.reader(f)
-        print(csvFile.lines())
+        rows = []
+        for lines in csvFile:
+            rows.append(lines)
+        print(rows)
 
