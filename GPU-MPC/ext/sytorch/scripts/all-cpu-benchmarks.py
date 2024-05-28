@@ -23,8 +23,9 @@ def run_par(cmd1, cmd2):
 
 for b in benchmarks:
     print("[+] benchmarking " + b)
-    print("[+] compiling...")
+    print("[+] --- compiling...")
     run_seq('make benchmark-' + b)
-    print("[+] running dealer...")
+    print("[+] --- running dealer...")
     run_seq(f'./benchmark-{b} 1')
+    run_par(f'OMP_NUM_THREADS=4 ./benchmark-{b} 2', f'OMP_NUM_THREADS=4 ./benchmark-{b} 3')
 
