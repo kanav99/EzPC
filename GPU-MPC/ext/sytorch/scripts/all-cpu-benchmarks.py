@@ -13,6 +13,9 @@ benchmarks = [
 
 logfile1 = open("log1.log", 'a')
 logfile2 = open("log2.log", 'a')
+outcsv = open("results.csv", 'a')
+outcsv.write("model,act_time,act_comm,softmax_time,softmax_comm,norm_time,norm_comm,total_time,total_comm\n")
+outcsv.flush()
 
 def run_seq(cmd):
     p = subprocess.Popen(cmd, shell=True, stdout=logfile1, stderr=logfile1)
@@ -63,6 +66,7 @@ for b in benchmarks:
                 softmax_comm += float(lines[2])
             total_time += float(lines[1])
             total_comm += float(lines[2])
+    run_seq(f"cp llama3.csv {b}.csv")
     print("[+] --- act time = " + str(act_time/1000.0) + " s")
     print("[+] --- act comm = " + str(act_comm/1024.0) + " GB")
     print("[+] --- softmax time = " + str(softmax_time/1000.0) + " s")
@@ -71,6 +75,8 @@ for b in benchmarks:
     print("[+] --- norm comm = " + str(norm_comm/1024.0) + " GB")
     print("[+] --- online time = " + str(total_time/1000.0) + " s")
     print("[+] --- online comm = " + str(total_comm/1024.0) + " GB")
+    outcsv.write(f"{b},{act_time},{act_comm},{softmax_time},{softmax_comm},{norm_time},{norm_comm},{total_time},{total_comm}\n")
+    outcsv.flush()
 
 logfile1.close()
 logfile2.close()
