@@ -6,9 +6,11 @@ mute = False
 benchmarks = [
     'bert-tiny',
     'bert-base',
-    'bert-large',
+    'bert-large', # very large key
     'gpt2',
-    'gptneo'
+    'gptneo', # very large key
+    "llama-7b", # very large key
+    "llama-13b", # very large key
 ]
 
 logfile1 = open("log1.log", 'a')
