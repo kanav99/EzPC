@@ -41,7 +41,11 @@ for b in benchmarks:
     norm_comm = 0.0
     with open('llama3.csv') as f:
         csvFile = csv.reader(f)
+        header_skipped = False
         for lines in csvFile:
+            if not header_skipped:
+                header_skipped = True
+                continue
             if lines[0].startswith('GeLU::'):
                 act_time += float(lines[1])
                 act_comm += float(lines[2])
