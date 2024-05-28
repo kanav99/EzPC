@@ -11,14 +11,16 @@ benchmarks = [
     'gptneo'
 ]
 
+logfile = open("log.log", 'a')
+
 def run_seq(cmd):
-    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    p = subprocess.Popen(cmd, shell=True, stdout=logfile, stderr=logfile)
     p.wait()
 
 
 def run_par(cmd1, cmd2):
-    p1 = subprocess.Popen(cmd1, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    p2 = subprocess.Popen(cmd2, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    p1 = subprocess.Popen(cmd1, shell=True, stdout=logfile, stderr=logfile)
+    p2 = subprocess.Popen(cmd2, shell=True, stdout=logfile, stderr=logfile)
     p1.wait()
     p2.wait()
 
@@ -69,3 +71,4 @@ for b in benchmarks:
     print("[+] --- online time = " + str(total_time/1000.0) + " s")
     print("[+] --- online comm = " + str(total_comm/1024.0) + " GB")
 
+logfile.close()
