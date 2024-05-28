@@ -80,3 +80,4 @@ for b in benchmarks:
 
 logfile1.close()
 logfile2.close()
+outcsv.close()
